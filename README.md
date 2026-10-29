@@ -1,2 +1,37 @@
-# low-altitude-emergency-care
-A research framework for low-altitude emergency medical service accessibility and facility siting.
+# 低空公共服务研究平台
+
+**Low-Altitude Public Service Lab**
+
+面向低空交通与公共管理交叉研究，探索低空基础设施布局、应急医疗服务可达性和区域公共服务公平性的空间分析方法。平台以研究型地图和情景分析为主要形式，支持将公开数据、模型方法与案例研究整合到统一的可视化界面中。
+
+**在线访问：** [低空应急医疗服务分析平台](https://lilalalalabo.github.io/low-altitude-emergency-care/)
+
+## 当前进展
+
+项目处于早期开发阶段，已搭建中英文界面、分析工作台和研究模块框架，并接入武汉医疗设施开放数据样本。案例地图支持查看设施位置、筛选 OSM 中标注 `emergency=yes` 的记录，以及查看单个要素信息。情景计算、选址优化和服务覆盖分析尚在规划中。
+
+## 规划功能
+
+- **公共服务设施图谱：** 组织医疗机构、候选起降点和交通网络等空间数据，提供分层浏览和区域查询。
+- **低空设施选址：** 结合需求分布、设施约束和服务目标，探索多方案选址与布局优化。
+- **应急响应情景分析：** 在明确模型假设和参数的基础上，对不同设施配置和服务条件进行模拟。
+- **可达性与公平性评估：** 比较区域间服务覆盖、估计响应时间和公共资源配置差异。
+- **多方案对比：** 展示设施数量、空间布局和服务阈值变化对分析结果的影响。
+- **研究方法与数据管理：** 记录数据来源、处理流程、指标口径及模型假设，支持案例复核与研究扩展。
+
+以上为拟开发方向，并非当前已实现的功能；实现范围将随数据和研究进展调整。
+
+## 武汉案例与数据说明
+
+案例使用 [GeoClaw 武汉开放数据集](https://github.com/whuyao/GeoClaw_Claude/tree/main/data/wuhan)中的医院点位和行政边界。数据集文档将其描述为 2026 年 3 月提取的 OpenStreetMap 数据；原始样本包含 200 条记录，其中 146 条点位位于同一数据集的武汉边界内，经点与多边形空间匹配后用于展示。此样本不代表武汉市完整医院名录，也不保证数据现势性。地图上展示的是来源数据中的 `emergency=yes` 标签，并非经核实的急诊能力；未标注该字段也不意味着没有急诊服务。医院位置不代表已具备低空起降条件，案例不能用于实际应急调度。
+
+数据及边界 © [OpenStreetMap 贡献者](https://www.openstreetmap.org/copyright)，依据 [开放数据库许可证 ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) 提供。案例数据文件为上述公开数据的精简版本，保留坐标、OSM 要素标识、名称与应急标签；行政边界用于研究可视化，不作为法定边界依据。
+
+## 参考研究
+
+Espejo-Díaz, J. A., Alfonso-Lizarazo, E., & Montoya-Torres, J. R. (2025). Improving access to emergency medical services using advanced air mobility vehicles. *Flexible Services and Manufacturing Journal*, 37, 1060–1092. [https://doi.org/10.1007/s10696-023-09507-9](https://doi.org/10.1007/s10696-023-09507-9)
+
+## 运行
+
+该项目为静态网站，通过 GitHub Pages 发布。下载仓库后可在本地用浏览器打开 `index.html`；无需安装依赖。当前武汉案例使用随网站提供的数据文件，不依赖在线地图瓦片服务。
+
