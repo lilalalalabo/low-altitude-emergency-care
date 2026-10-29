@@ -1,9 +1,9 @@
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.FlightPlanner=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
- const WIDTH=24, HEIGHT=16, CELL_METERS=50, VERTICAL_SPEED=3, CLEARANCE=10;
+ const WIDTH=60, HEIGHT=40, CELL_METERS=50, VERTICAL_SPEED=3, CLEARANCE=10;
  const profiles={A:{height:60,speed:12},B:{height:100,speed:15},C:{height:140,speed:18},D:{height:180,speed:21}};
  // Fictional obstacles for a schematic example, not real-world aeronautical information.
- const obstacles=[{id:'R1',type:'restricted',x:9,y:5,w:4,h:6,height:null},{id:'R2',type:'restricted',x:18,y:0,w:3,h:4,height:null},{id:'B1',type:'building',x:4,y:3,w:3,h:3,height:85},{id:'B2',type:'building',x:15,y:8,w:3,h:4,height:125},{id:'B3',type:'building',x:19,y:11,w:3,h:3,height:155},{id:'B4',type:'building',x:6,y:11,w:2,h:3,height:45}];
+ const obstacles=[{id:'R1',type:'restricted',x:26,y:13,w:7,h:10,height:null},{id:'R2',type:'restricted',x:46,y:3,w:6,h:7,height:null},{id:'R3',type:'restricted',x:12,y:28,w:7,h:5,height:null},{id:'B1',type:'building',x:10,y:8,w:4,h:5,height:85},{id:'B2',type:'building',x:35,y:18,w:5,h:6,height:125},{id:'B3',type:'building',x:48,y:28,w:4,h:5,height:155},{id:'B4',type:'building',x:8,y:20,w:4,h:4,height:45},{id:'B5',type:'building',x:20,y:4,w:4,h:4,height:115},{id:'B6',type:'building',x:38,y:5,w:4,h:4,height:70},{id:'B7',type:'building',x:21,y:25,w:4,h:5,height:105},{id:'B8',type:'building',x:42,y:27,w:3,h:4,height:60},{id:'B9',type:'building',x:53,y:15,w:4,h:5,height:95},{id:'B10',type:'building',x:29,y:30,w:5,h:4,height:145},{id:'B11',type:'building',x:4,y:31,w:4,h:4,height:65},{id:'B12',type:'building',x:53,y:35,w:4,h:3,height:110}];
  const within=(x,y)=>x>=0&&y>=0&&x<WIDTH&&y<HEIGHT;
  const covers=(o,x,y)=>x>=o.x&&x<o.x+o.w&&y>=o.y&&y<o.y+o.h;
  function occupied(x,y,height){return !within(x,y)||obstacles.some(o=>covers(o,x,y)&&(o.type==='restricted'||height<=o.height+CLEARANCE))}
