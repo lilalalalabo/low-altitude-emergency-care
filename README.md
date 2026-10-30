@@ -42,3 +42,5 @@ Hart, P. E., Nilsson, N. J., & Raphael, B. (1968). A formal basis for the heuris
 
 网站使用静态文件，通过 GitHub Pages 发布。下载仓库后可在本地用浏览器打开 `index.html`，无需安装依赖。
 
+GitHub Pages 从 `main` 分支的仓库根目录发布。开发目录 `dist/` 中的网页文件变更后，发布时需同步到仓库根目录（包括 `index.html` 及其引用的样式和脚本），否则线上仍会显示旧版本。
+

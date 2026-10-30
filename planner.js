@@ -19,6 +19,36 @@
   }return {error:'no_route'};
  }
  function positionAt(path,elapsed,height,speed,verticalSpeed=VERTICAL_SPEED){const climb=height/verticalSpeed;if(elapsed<=0)return {point:path[0],altitude:0,phase:'waiting'};if(elapsed<climb)return {point:path[0],altitude:elapsed*verticalSpeed,phase:'climb'};let remaining=(elapsed-climb)*speed;for(let i=1;i<path.length;i++){let a=path[i-1],b=path[i],length=Math.hypot(b.x-a.x,b.y-a.y)*CELL_METERS;if(remaining<length){let u=remaining/length;return {point:{x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u},altitude:height,phase:'cruise'};}remaining-=length;}const descend=remaining/speed;if(descend<climb)return {point:path[path.length-1],altitude:Math.max(0,height-descend*verticalSpeed),phase:'descent'};return {point:path[path.length-1],altitude:0,phase:'arrived'};}
- return {WIDTH,HEIGHT,CELL_METERS,VERTICAL_SPEED,CLEARANCE,profiles,obstacles,within,covers,occupied,groundBlocked,findPath,positionAt};
+ // Piecewise-linear motion in metres and seconds, including climb and descent.
+ // Aircraft enter the model at takeoff and leave it on landing.
+ const HORIZONTAL_SEPARATION=50, VERTICAL_SEPARATION=30, DELAY_STEP=10, MAX_DELAY=7200;
+ function trajectory(path,height,speed,verticalSpeed){
+  const segments=[];let t=0;const xy=p=>({x:(p.x+.5)*CELL_METERS,y:(p.y+.5)*CELL_METERS});
+  function add(a,b,duration){if(duration<=0)return;segments.push({start:t,end:t+duration,a,b});t+=duration;}
+  const first=xy(path[0]);add({...first,z:0},{...first,z:height},height/verticalSpeed);
+  for(let i=1;i<path.length;i++){const a=xy(path[i-1]),b=xy(path[i]);add({...a,z:height},{...b,z:height},Math.hypot(b.x-a.x,b.y-a.y)/speed);}
+  const last=xy(path[path.length-1]);add({...last,z:height},{...last,z:0},height/verticalSpeed);
+  return {segments,duration:t};
+ }
+ function at(seg,time,departure){let u=(time-departure-seg.start)/(seg.end-seg.start);return {x:seg.a.x+(seg.b.x-seg.a.x)*u,y:seg.a.y+(seg.b.y-seg.a.y)*u,z:seg.a.z+(seg.b.z-seg.a.z)*u};}
+ // Intersect the time ranges in which horizontal and vertical separations are
+ // simultaneously below the thresholds; exact for each linear segment pair.
+ function segmentConflict(a,ta,b,tb){
+  const begin=Math.max(ta+a.start,tb+b.start),end=Math.min(ta+a.end,tb+b.end);if(end<begin)return false;
+  const pa=at(a,begin,ta),pb=at(b,begin,tb),va={x:(a.b.x-a.a.x)/(a.end-a.start),y:(a.b.y-a.a.y)/(a.end-a.start),z:(a.b.z-a.a.z)/(a.end-a.start)},vb={x:(b.b.x-b.a.x)/(b.end-b.start),y:(b.b.y-b.a.y)/(b.end-b.start),z:(b.b.z-b.a.z)/(b.end-b.start)};
+  const x=pa.x-pb.x,y=pa.y-pb.y,z=pa.z-pb.z,vx=va.x-vb.x,vy=va.y-vb.y,vz=va.z-vb.z;
+  let lo=0,hi=end-begin;const A=vx*vx+vy*vy,B=2*(x*vx+y*vy),C=x*x+y*y-HORIZONTAL_SEPARATION**2;
+  if(A<1e-12){if(C>=0)return false;}else{const disc=B*B-4*A*C;if(disc<=0)return false;const root=Math.sqrt(disc);lo=Math.max(lo,(-B-root)/(2*A));hi=Math.min(hi,(-B+root)/(2*A));}
+  if(Math.abs(vz)<1e-12){if(Math.abs(z)>=VERTICAL_SEPARATION)return false;}else{const z1=(-VERTICAL_SEPARATION-z)/vz,z2=(VERTICAL_SEPARATION-z)/vz;lo=Math.max(lo,Math.min(z1,z2));hi=Math.min(hi,Math.max(z1,z2));}
+  if(lo<hi)return true;
+  if(Math.abs(lo-hi)<1e-9&&lo>=0&&lo<=end-begin)return Math.hypot(x+vx*lo,y+vy*lo)<HORIZONTAL_SEPARATION&&Math.abs(z+vz*lo)<VERTICAL_SEPARATION;
+  return false;
+ }
+ function conflicts(a,departureA,b,departureB){let i=0,j=0;while(i<a.segments.length&&j<b.segments.length){let x=a.segments[i],y=b.segments[j];if(segmentConflict(x,departureA,y,departureB))return true;let ae=departureA+x.end,be=departureB+y.end;if(ae<=be)i++;if(be<=ae)j++;}return false;}
+ function schedule(candidate,requested,prior){
+  for(let delay=0;delay<=MAX_DELAY;delay+=DELAY_STEP){let departure=requested+delay;if(prior.every(p=>!conflicts(candidate,departure,p.trajectory,p.departure)))return {departure,delay};}
+  return {error:'no_schedule'};
+ }
+ return {WIDTH,HEIGHT,CELL_METERS,VERTICAL_SPEED,CLEARANCE,profiles,obstacles,within,covers,occupied,groundBlocked,findPath,positionAt,HORIZONTAL_SEPARATION,VERTICAL_SEPARATION,DELAY_STEP,MAX_DELAY,trajectory,conflicts,schedule};
 });
 
