@@ -1,0 +1,25 @@
+#workbench .mode-chooser{margin-bottom:20px}
+#workbench .mode-label-row{margin-bottom:9px}
+#workbench .mode-tabs{gap:8px;border:0;background:transparent}
+#workbench .mode-tab{min-height:64px;border:1px solid #d6ddd4;border-radius:7px;padding:12px 15px;transition:background .15s,border-color .15s}
+#workbench .mode-tab:last-child{border-right:1px solid #d6ddd4}
+#workbench .mode-tab.active{border-color:#194f3d}
+#workbench .flight-side .lead{margin:0 0 14px;line-height:1.55}
+#workbench .flight-fields{margin-bottom:4px}
+#workbench .point-field{width:100%;min-height:40px;padding:9px 10px;border:1px solid #d8d7ce;border-radius:5px;background:#fff;color:#52635a;text-align:left;font:inherit;font-size:11px;cursor:pointer}
+#workbench .point-field.active{border-color:#33735a;background:#f0f6f0;color:#194f3d;box-shadow:inset 0 0 0 1px #33735a}
+#workbench .point-field:hover{border-color:#33735a}
+#workbench .flight-map-head button{min-height:36px}
+#workbench .strategy-box{margin:15px 0 0;padding:11px;background:#f7f7f1;border-radius:5px}
+#workbench .strategy-title{margin-bottom:7px}
+#workbench .strategy-buttons button{min-height:36px;border-radius:4px}
+#workbench .strategy-note{margin-top:7px}
+#workbench .flight-primary{min-height:44px;margin-top:14px;border-radius:5px}
+#workbench .flight-queue{margin-top:20px}
+#workbench .clear-tasks{padding:7px 8px;border-radius:4px}
+#workbench .clear-tasks:not(:disabled):hover{background:#eef3ed;color:#194f3d}
+#workbench .map-timeline{padding:14px 20px}
+#workbench .map-timeline .flight-play{max-width:none}
+#workbench .map-timeline .flight-play button{min-width:76px;min-height:38px;border-radius:5px}
+#workbench button:focus-visible,#workbench summary:focus-visible{outline:2px solid #397b60;outline-offset:2px}
+@media(max-width:700px){#workbench .mode-chooser{overflow:visible}#workbench .mode-tabs{min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))}#workbench .mode-tab{min-height:58px}#workbench .map-timeline{padding:14px}}
